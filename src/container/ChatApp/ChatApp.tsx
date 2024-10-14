@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Message } from '../../types';
 import MessageForm from '../../components/MessageForm/MessageForm';
+import MessageItem from '../../components/MessageItem/MessageItem';
 
 const ChatApp = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -68,10 +69,7 @@ const ChatApp = () => {
       <MessageForm onSendMessage={sendMessage} />
       <div className="messages-list">
         {messages.map((message) => (
-          <div key={message.id} className="message-item">
-            <strong>{message.author}:</strong> {message.message}
-            <div className="message-datetime">{new Date(message.datetime).toLocaleString()}</div>
-          </div>
+          <MessageItem message={message} />
         ))}
       </div>
     </div>
