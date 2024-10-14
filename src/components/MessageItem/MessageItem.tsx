@@ -7,10 +7,12 @@ interface Props {
 
 const MessageItem: React.FC<Props> = ({message}) => {
   return (
-    <div>
-      <div key={message.id} className="message-item">
-        <strong>{message.author}:</strong> {message.message}
-        <div className="message-datetime">{new Date(message.datetime).toLocaleString()}</div>
+    <div className='card col-5 m-2'>
+      <div key={message.id} className="card-header">
+        <div className="card-body">
+          <strong className='card-title'>{message.author}:</strong> {message.message}
+          <div className="card-text">{new Date(message.datetime).toLocaleString()}</div>
+        </div>
       </div>
     </div>
   );

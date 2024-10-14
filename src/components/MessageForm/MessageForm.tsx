@@ -19,10 +19,17 @@ const MessageForm: React.FC<Props> = ({onSendMessage}) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" placeholder='Your name' value={author} onChange={(e) => setAuthor(e.target.value)} />
-      <input type="text" placeholder='Your text' value={message} onChange={(e) => setMessage(e.target.value)} />
-      <button type='submit' className='btn btn-primary'>Send</button>
+    <form onSubmit={handleSubmit} className='col-5'>
+      <div className="mb-3">
+        <label htmlFor="name" className="form-label">Enter your name</label>
+        <input type="text" placeholder="Your name" value={author} onChange={(e) => setAuthor(e.target.value)}
+               className="form-control"/>
+      </div>
+      <div className="mb-3">
+        <label htmlFor="message" className="form-label">Enter your message</label>
+        <input type="text" placeholder="Your text" value={message} onChange={(e) => setMessage(e.target.value)} className='form-control' />
+      </div>
+      <button type="submit" className="btn btn-primary">Send</button>
     </form>
   );
 };

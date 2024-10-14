@@ -24,24 +24,11 @@ const ChatApp = () => {
   }, [lastDatetime]);
 
   useEffect(() => {
-    const id = setInterval(async () => {
-      let url = 'http://146.185.154.90:8000/messages';
-      if (lastDatetime) {
-        url += `?datetime=${lastDatetime}`;
-      }
-      const response = await fetch(url);
-      if (response.ok) {
-        const data: Message[] = await response.json();
-        if (data.length > 0) {
-          setMessages((prevMessages) => [...prevMessages, ...data]);
-          setLastDatetime(data[data.length - 1].datetime);
-        }
-      }
-    }, 3000);
+    const id = setInterval(fetchMessages, 3000);
     setIntervalId(id);
 
     return () => clearInterval(id);
-  }, [lastDatetime]);
+  }, [fetchMessages,lastDatetime]);
 
   const sendMessage = async (message: string, author: string) => {
     if (intervalId) {
@@ -64,8 +51,8 @@ const ChatApp = () => {
   };
 
   return (
-    <div className="chat-app">
-      <h1>Чат</h1>
+    <div className="container">
+      <h1 className='card-title'>Chat</h1>
       <MessageForm onSendMessage={sendMessage} />
       <div className="messages-list">
         {messages.map((message) => (
