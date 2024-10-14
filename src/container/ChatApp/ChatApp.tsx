@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Message } from '../../types';
-import MessageForm from '../../components/MessageForm/MessageForm';
-import MessageItem from '../../components/MessageItem/MessageItem';
+import { useCallback, useEffect, useState } from "react";
+import { Message } from "../../types";
+import MessageForm from "../../components/MessageForm/MessageForm";
+import MessageItem from "../../components/MessageItem/MessageItem";
 
 const ChatApp = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -9,7 +9,7 @@ const ChatApp = () => {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const fetchMessages = useCallback(async () => {
-    let url = 'http://146.185.154.90:8000/messages';
+    let url = "http://146.185.154.90:8000/messages";
     if (lastDatetime) {
       url += `?datetime=${lastDatetime}`;
     }
@@ -28,7 +28,7 @@ const ChatApp = () => {
     setIntervalId(id);
 
     return () => clearInterval(id);
-  }, [fetchMessages,lastDatetime]);
+  }, [fetchMessages, lastDatetime]);
 
   const sendMessage = async (message: string, author: string) => {
     if (intervalId) {
@@ -36,11 +36,11 @@ const ChatApp = () => {
     }
 
     const data = new URLSearchParams();
-    data.set('message', message);
-    data.set('author', author);
+    data.set("message", message);
+    data.set("author", author);
 
-    await fetch('http://146.185.154.90:8000/messages', {
-      method: 'post',
+    await fetch("http://146.185.154.90:8000/messages", {
+      method: "post",
       body: data,
     });
 
@@ -52,7 +52,7 @@ const ChatApp = () => {
 
   return (
     <div className="container">
-      <h1 className='card-title'>Chat</h1>
+      <h1 className="card-title">Chat</h1>
       <MessageForm onSendMessage={sendMessage} />
       <div className="messages-list">
         {messages.map((message) => (

@@ -1,7 +1,6 @@
-import ChatApp from './container/ChatApp/ChatApp';
+import ChatApp from "./container/ChatApp/ChatApp";
 
 const App = () => {
-
   return (
     <>
       <ChatApp />
