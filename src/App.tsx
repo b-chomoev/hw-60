@@ -1,9 +1,10 @@
+import ChatApp from './container/ChatApp/ChatApp';
 
 const App = () => {
 
   return (
     <>
-      Hello World
+      <ChatApp />
     </>
   );
 };
