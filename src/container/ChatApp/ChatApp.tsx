@@ -1,51 +1,76 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Message } from '../../types';
+import MessageForm from '../../components/MessageForm/MessageForm';
 
 const ChatApp = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [lastDateTime, setLastDateTime] = useState(null);
+  const [lastDatetime, setLastDatetime] = useState<string | null>(null);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
-  const fetchMessages = useCallback( async () => {
+  const fetchMessages = useCallback(async () => {
     let url = 'http://146.185.154.90:8000/messages';
-
-    if (lastDateTime) {
-      url += `?datetime=${lastDateTime}`;
+    if (lastDatetime) {
+      url += `?datetime=${lastDatetime}`;
     }
-
     const response = await fetch(url);
     if (response.ok) {
-      const data = await response.json();
+      const data: Message[] = await response.json();
       if (data.length > 0) {
-        setMessages(prevMessages => [...(prevMessages || []), ...data]);
-        setLastDateTime(data[data.length - 1].dateTime);
+        setMessages((prevMessages) => [...prevMessages, ...data]);
+        setLastDatetime(data[data.length - 1].datetime);
       }
     }
-  }, [lastDateTime]);
+  }, [lastDatetime]);
 
   useEffect(() => {
-    const intervalId = setInterval(async () => {
-      const url = 'http://146.185.154.90:8000/messages?datetime=' + (lastDateTime || '');
+    const id = setInterval(async () => {
+      let url = 'http://146.185.154.90:8000/messages';
+      if (lastDatetime) {
+        url += `?datetime=${lastDatetime}`;
+      }
       const response = await fetch(url);
       if (response.ok) {
         const data: Message[] = await response.json();
         if (data.length > 0) {
-          fetchMessages().catch((error) => console.error('Ошибка при получении сообщений:', error));
+          setMessages((prevMessages) => [...prevMessages, ...data]);
+          setLastDatetime(data[data.length - 1].datetime);
         }
       }
     }, 3000);
+    setIntervalId(id);
 
-    // Очищаем интервал при размонтировании компонента
-    return () => clearInterval(intervalId);
-  }, [lastDateTime, fetchMessages]);
+    return () => clearInterval(id);
+  }, [lastDatetime]);
+
+  const sendMessage = async (message: string, author: string) => {
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
+
+    const data = new URLSearchParams();
+    data.set('message', message);
+    data.set('author', author);
+
+    await fetch('http://146.185.154.90:8000/messages', {
+      method: 'post',
+      body: data,
+    });
+
+    await fetchMessages();
+
+    const id = setInterval(fetchMessages, 3000);
+    setIntervalId(id);
+  };
 
   return (
-    <div>
-      <h1>Chat</h1>
-      <div className='messages-list'>
-        {messages.map(message => (
-          <div key={message.id} className='message-item'>
-            <strong>{message.author}: </strong> {message.message}
-            <div className='message-datetime'>{new Date(message.datetime).toLocaleString()}</div>
+    <div className="chat-app">
+      <h1>Чат</h1>
+      <MessageForm onSendMessage={sendMessage} />
+      <div className="messages-list">
+        {messages.map((message) => (
+          <div key={message.id} className="message-item">
+            <strong>{message.author}:</strong> {message.message}
+            <div className="message-datetime">{new Date(message.datetime).toLocaleString()}</div>
           </div>
         ))}
       </div>
